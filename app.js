@@ -1,12 +1,10 @@
 var express = require('express');
 var app = express();
 
-var scraper = require('./modules/scraper');
+var pathToPhilosophy = require('./modules/pathToPhilosophy');
 
-app.get('/philosophy', function(req, res){
-	var url = req.query.url;
-	scraper.getWikiPageLinks(url);
-	res.send('hello world');
+app.get('/philosophy', function(request, response){
+
 });
 
 app.listen(3000);
