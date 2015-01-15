@@ -1,4 +1,4 @@
-PathToPhilosophy = function (di) {
+module.exports.inject = function (di) {
 
     var dep = di;
     var scraper = dep.scraper || require('./scraper');
@@ -16,21 +16,23 @@ PathToPhilosophy = function (di) {
     }
 
     var recursiveFind = function (url, callback) {
-
-
         checkForMaxVisits(callback);
         scraper.getWikiPageLinks(url, function (wikiPageLink) {
-
             handleRoot(wikiPageLink, callback);
 
-            if (hasChildren(wikiPageLink) === false) {
+            if (hasChildren(wikiPageLink) === false)
                 return false;
-            }
 
             if (checkForSuccess(wikiPageLink, callback) === true)
                 return true;
+
             depthFirstSearch(wikiPageLink, callback);
         });
+    }
+
+    var checkForMaxVisits = function (callback) {
+        if (++scrapes == maxNumberOfVisits)
+            callback(null);
     }
 
     var hasChildren = function (wikiPageLink) {
@@ -38,7 +40,6 @@ PathToPhilosophy = function (di) {
             return true;
         return false;
     }
-
 
     var handleRoot = function (wikiPageLink, callback) {
         if (path.length === 0) {
@@ -69,10 +70,7 @@ PathToPhilosophy = function (di) {
             return false;
     }
 
-    var checkForMaxVisits = function (callback) {
-        if (++scrapes == maxNumberOfVisits)
-            callback(null);
-    }
+
     var checkForMxaxDepth = function () {
         if (path.length < maxDepth)
             return true;
@@ -93,6 +91,7 @@ PathToPhilosophy = function (di) {
             return false
         return true;
     }
+
     var visitChild = function (childLink, callback) {
         if (hasVisitedChild(childLink) === true)
             return;

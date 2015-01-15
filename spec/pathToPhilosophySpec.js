@@ -5,7 +5,6 @@ describe("PathToPhilosophy", function () {
         var di = {};
         di.maxDepth = 4;
         di.scraper = {};
-        //di.console = {log : function(data){ return; }};
         di.scraper.getWikiPageLinks = function (url, callback) {
 
             var data = {
@@ -88,7 +87,7 @@ describe("PathToPhilosophy", function () {
             callback(data)
 
         }
-        pathToPhilosophy = new PathToPhilosophy(di);
+        pathToPhilosophy = require('../modules/pathToPhilosophy').inject(di);
     });
 
     it("Should not be able to find a path when no children", function () {
