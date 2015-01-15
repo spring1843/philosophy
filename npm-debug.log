@@ -1,62 +1,185 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
-1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'install',
-1 verbose cli   'linkscape',
-1 verbose cli   '--save' ]
-2 info using npm@1.3.2
-3 info using node@v0.10.13
-4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
-5 verbose readDependencies using package.json deps
-6 verbose cache add [ 'linkscape', null ]
-7 verbose cache add name=undefined spec="linkscape" args=["linkscape",null]
-8 verbose parsed url { protocol: null,
-8 verbose parsed url   slashes: null,
-8 verbose parsed url   auth: null,
-8 verbose parsed url   host: null,
-8 verbose parsed url   port: null,
-8 verbose parsed url   hostname: null,
-8 verbose parsed url   hash: null,
-8 verbose parsed url   search: null,
-8 verbose parsed url   query: null,
-8 verbose parsed url   pathname: 'linkscape',
-8 verbose parsed url   path: 'linkscape',
-8 verbose parsed url   href: 'linkscape' }
-9 silly lockFile 8edce19a-linkscape linkscape
-10 verbose lock linkscape C:\Users\Nicolas\AppData\Roaming\npm-cache\8edce19a-linkscape.lock
-11 silly lockFile 8edce19a-linkscape linkscape
-12 silly lockFile 8edce19a-linkscape linkscape
-13 verbose addNamed [ 'linkscape', '' ]
-14 verbose addNamed [ null, '*' ]
-15 silly lockFile 8491c76b-linkscape linkscape@
-16 verbose lock linkscape@ C:\Users\Nicolas\AppData\Roaming\npm-cache\8491c76b-linkscape.lock
-17 silly addNameRange { name: 'linkscape', range: '*', hasData: false }
-18 verbose url raw linkscape
-19 verbose url resolving [ 'https://registry.npmjs.org/', './linkscape' ]
-20 verbose url resolved https://registry.npmjs.org/linkscape
-21 info trying registry request attempt 1 at 22:42:08
-22 http GET https://registry.npmjs.org/linkscape
-23 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
-24 info trying registry request attempt 2 at 22:42:18
-25 http GET https://registry.npmjs.org/linkscape
-26 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
-27 info trying registry request attempt 3 at 22:43:18
-28 http GET https://registry.npmjs.org/linkscape
-29 silly lockFile 8491c76b-linkscape linkscape@
-30 silly lockFile 8491c76b-linkscape linkscape@
-31 error network getaddrinfo ENOTFOUND
-31 error network This is most likely not a problem with npm itself
-31 error network and is related to network connectivity.
-31 error network In most cases you are behind a proxy or have bad network settings.
-31 error network
-31 error network If you are behind a proxy, please make sure that the
-31 error network 'proxy' config is set properly.  See: 'npm help config'
-32 error System Windows_NT 6.2.9200
-33 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "linkscape" "--save"
-34 error cwd C:\Users\Nicolas\Desktop\Projects\philosophy
-35 error node -v v0.10.13
-36 error npm -v 1.3.2
-37 error syscall getaddrinfo
-38 error code ENOTFOUND
-39 error errno ENOTFOUND
-40 verbose exit [ 1, true ]
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 warn package.json philosophy@1.0.0 No description
+5 warn package.json philosophy@1.0.0 No repository field.
+6 warn package.json philosophy@1.0.0 No README data
+7 verbose readDependencies using package.json deps
+8 verbose install where, deps [ '/home/nicolas/data/develop/twopointo/node/philosophy',
+8 verbose install   [ 'express', 'mongoose', 'mongoose-mock', 'request', 'linkspace' ] ]
+9 info preinstall philosophy@1.0.0
+10 verbose readDependencies using package.json deps
+11 verbose cache add [ 'linkspace@0.1.0', null ]
+12 verbose cache add name=undefined spec="linkspace@0.1.0" args=["linkspace@0.1.0",null]
+13 verbose parsed url { protocol: null,
+13 verbose parsed url   slashes: null,
+13 verbose parsed url   auth: null,
+13 verbose parsed url   host: null,
+13 verbose parsed url   port: null,
+13 verbose parsed url   hostname: null,
+13 verbose parsed url   hash: null,
+13 verbose parsed url   search: null,
+13 verbose parsed url   query: null,
+13 verbose parsed url   pathname: 'linkspace@0.1.0',
+13 verbose parsed url   path: 'linkspace@0.1.0',
+13 verbose parsed url   href: 'linkspace@0.1.0' }
+14 verbose cache add name="linkspace" spec="0.1.0" args=["linkspace","0.1.0"]
+15 verbose parsed url { protocol: null,
+15 verbose parsed url   slashes: null,
+15 verbose parsed url   auth: null,
+15 verbose parsed url   host: null,
+15 verbose parsed url   port: null,
+15 verbose parsed url   hostname: null,
+15 verbose parsed url   hash: null,
+15 verbose parsed url   search: null,
+15 verbose parsed url   query: null,
+15 verbose parsed url   pathname: '0.1.0',
+15 verbose parsed url   path: '0.1.0',
+15 verbose parsed url   href: '0.1.0' }
+16 verbose addNamed [ 'linkspace', '0.1.0' ]
+17 verbose addNamed [ '0.1.0', '0.1.0' ]
+18 silly lockFile f594aa14-linkspace-0-1-0 linkspace@0.1.0
+19 verbose lock linkspace@0.1.0 /home/nicolas/.npm/f594aa14-linkspace-0-1-0.lock
+20 verbose already installed skipping express@^4.10.8 /home/nicolas/data/develop/twopointo/node/philosophy
+21 verbose already installed skipping mongoose@^3.8.21 /home/nicolas/data/develop/twopointo/node/philosophy
+22 verbose request where is /linkspace
+23 verbose request registry https://registry.npmjs.org/
+24 verbose request id 300e9c854f7d9408
+25 verbose url raw /linkspace
+26 verbose url resolving [ 'https://registry.npmjs.org/', './linkspace' ]
+27 verbose url resolved https://registry.npmjs.org/linkspace
+28 verbose request where is https://registry.npmjs.org/linkspace
+29 info trying registry request attempt 1 at 17:06:21
+30 http GET https://registry.npmjs.org/linkspace
+31 verbose cache add [ 'mongoose-mock@^0.4.0', null ]
+32 verbose cache add name=undefined spec="mongoose-mock@^0.4.0" args=["mongoose-mock@^0.4.0",null]
+33 verbose parsed url { protocol: null,
+33 verbose parsed url   slashes: null,
+33 verbose parsed url   auth: null,
+33 verbose parsed url   host: null,
+33 verbose parsed url   port: null,
+33 verbose parsed url   hostname: null,
+33 verbose parsed url   hash: null,
+33 verbose parsed url   search: null,
+33 verbose parsed url   query: null,
+33 verbose parsed url   pathname: 'mongoose-mock@^0.4.0',
+33 verbose parsed url   path: 'mongoose-mock@^0.4.0',
+33 verbose parsed url   href: 'mongoose-mock@^0.4.0' }
+34 verbose already installed skipping request@^2.51.0 /home/nicolas/data/develop/twopointo/node/philosophy
+35 verbose cache add name="mongoose-mock" spec="^0.4.0" args=["mongoose-mock","^0.4.0"]
+36 verbose parsed url { protocol: null,
+36 verbose parsed url   slashes: null,
+36 verbose parsed url   auth: null,
+36 verbose parsed url   host: null,
+36 verbose parsed url   port: null,
+36 verbose parsed url   hostname: null,
+36 verbose parsed url   hash: null,
+36 verbose parsed url   search: null,
+36 verbose parsed url   query: null,
+36 verbose parsed url   pathname: '^0.4.0',
+36 verbose parsed url   path: '^0.4.0',
+36 verbose parsed url   href: '^0.4.0' }
+37 verbose addNamed [ 'mongoose-mock', '^0.4.0' ]
+38 verbose addNamed [ null, '>=0.4.0-0 <0.5.0-0' ]
+39 silly lockFile 522d203e-mongoose-mock-0-4-0 mongoose-mock@^0.4.0
+40 verbose lock mongoose-mock@^0.4.0 /home/nicolas/.npm/522d203e-mongoose-mock-0-4-0.lock
+41 silly addNameRange { name: 'mongoose-mock',
+41 silly addNameRange   range: '>=0.4.0-0 <0.5.0-0',
+41 silly addNameRange   hasData: false }
+42 verbose request where is /mongoose-mock
+43 verbose request registry https://registry.npmjs.org/
+44 verbose url raw /mongoose-mock
+45 verbose url resolving [ 'https://registry.npmjs.org/', './mongoose-mock' ]
+46 verbose url resolved https://registry.npmjs.org/mongoose-mock
+47 verbose request where is https://registry.npmjs.org/mongoose-mock
+48 info trying registry request attempt 1 at 17:06:21
+49 http GET https://registry.npmjs.org/mongoose-mock
+50 http 200 https://registry.npmjs.org/mongoose-mock
+51 silly registry.get cb [ 200,
+51 silly registry.get   { date: 'Thu, 15 Jan 2015 22:06:22 GMT',
+51 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+51 silly registry.get     etag: '"6ST7NX4OAG6CDHLMMII87OB3C"',
+51 silly registry.get     'content-type': 'application/json',
+51 silly registry.get     'cache-control': 'max-age=60',
+51 silly registry.get     'content-length': '9043',
+51 silly registry.get     'accept-ranges': 'bytes',
+51 silly registry.get     via: '1.1 varnish',
+51 silly registry.get     age: '0',
+51 silly registry.get     'x-served-by': 'cache-atl6233-ATL',
+51 silly registry.get     'x-cache': 'MISS',
+51 silly registry.get     'x-cache-hits': '0',
+51 silly registry.get     'x-timer': 'S1421359581.749767,VS0,VE313',
+51 silly registry.get     vary: 'Accept',
+51 silly registry.get     'keep-alive': 'timeout=10, max=50',
+51 silly registry.get     connection: 'Keep-Alive' } ]
+52 http 404 https://registry.npmjs.org/linkspace
+53 verbose headers { date: 'Thu, 15 Jan 2015 22:06:22 GMT',
+53 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+53 verbose headers   'content-type': 'application/json',
+53 verbose headers   'cache-control': 'max-age=0',
+53 verbose headers   'content-length': '52',
+53 verbose headers   'accept-ranges': 'bytes',
+53 verbose headers   via: '1.1 varnish',
+53 verbose headers   age: '0',
+53 verbose headers   'x-served-by': 'cache-atl6226-ATL',
+53 verbose headers   'x-cache': 'MISS',
+53 verbose headers   'x-cache-hits': '0',
+53 verbose headers   'x-timer': 'S1421359581.749014,VS0,VE314',
+53 verbose headers   'keep-alive': 'timeout=10, max=50',
+53 verbose headers   connection: 'Keep-Alive' }
+54 silly registry.get cb [ 404,
+54 silly registry.get   { date: 'Thu, 15 Jan 2015 22:06:22 GMT',
+54 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+54 silly registry.get     'content-type': 'application/json',
+54 silly registry.get     'cache-control': 'max-age=0',
+54 silly registry.get     'content-length': '52',
+54 silly registry.get     'accept-ranges': 'bytes',
+54 silly registry.get     via: '1.1 varnish',
+54 silly registry.get     age: '0',
+54 silly registry.get     'x-served-by': 'cache-atl6226-ATL',
+54 silly registry.get     'x-cache': 'MISS',
+54 silly registry.get     'x-cache-hits': '0',
+54 silly registry.get     'x-timer': 'S1421359581.749014,VS0,VE314',
+54 silly registry.get     'keep-alive': 'timeout=10, max=50',
+54 silly registry.get     connection: 'Keep-Alive' } ]
+55 silly lockFile f594aa14-linkspace-0-1-0 linkspace@0.1.0
+56 silly lockFile f594aa14-linkspace-0-1-0 linkspace@0.1.0
+57 silly addNameRange number 2 { name: 'mongoose-mock',
+57 silly addNameRange   range: '>=0.4.0-0 <0.5.0-0',
+57 silly addNameRange   hasData: true }
+58 silly addNameRange versions [ 'mongoose-mock',
+58 silly addNameRange   [ '0.1.1', '0.1.2', '0.1.3', '0.3.0', '0.4.0' ] ]
+59 verbose addNamed [ 'mongoose-mock', '0.4.0' ]
+60 verbose addNamed [ '0.4.0', '0.4.0' ]
+61 silly lockFile 3b335c0e-mongoose-mock-0-4-0 mongoose-mock@0.4.0
+62 verbose lock mongoose-mock@0.4.0 /home/nicolas/.npm/3b335c0e-mongoose-mock-0-4-0.lock
+63 silly lockFile dc2dfbc8-ose-mock-mongoose-mock-0-4-0-tgz https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+64 verbose lock https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz /home/nicolas/.npm/dc2dfbc8-ose-mock-mongoose-mock-0-4-0-tgz.lock
+65 verbose addRemoteTarball [ 'https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz',
+65 verbose addRemoteTarball   '01995a35e034b4d66e711f6e8ce2263a4c5ada0d' ]
+66 info retry fetch attempt 1 at 17:06:22
+67 verbose fetch to= /tmp/npm-28200-nTBH2KVQ/registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+68 http GET https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+69 http 200 https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+70 silly lockFile dc2dfbc8-ose-mock-mongoose-mock-0-4-0-tgz https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+71 silly lockFile dc2dfbc8-ose-mock-mongoose-mock-0-4-0-tgz https://registry.npmjs.org/mongoose-mock/-/mongoose-mock-0.4.0.tgz
+72 silly lockFile 3b335c0e-mongoose-mock-0-4-0 mongoose-mock@0.4.0
+73 silly lockFile 3b335c0e-mongoose-mock-0-4-0 mongoose-mock@0.4.0
+74 silly lockFile 522d203e-mongoose-mock-0-4-0 mongoose-mock@^0.4.0
+75 silly lockFile 522d203e-mongoose-mock-0-4-0 mongoose-mock@^0.4.0
+76 error 404 404 Not Found: linkspace
+76 error 404
+76 error 404 'linkspace' is not in the npm registry.
+76 error 404 You should bug the author to publish it
+76 error 404 It was specified as a dependency of 'philosophy'
+76 error 404
+76 error 404 Note that you can also install from a
+76 error 404 tarball, folder, or http url, or git url.
+77 error System Linux 2.6.32-431.17.1.el6.x86_64
+78 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install"
+79 error cwd /home/nicolas/data/develop/twopointo/node/philosophy
+80 error node -v v0.10.33
+81 error npm -v 1.4.28
+82 error code E404
+83 verbose exit [ 1, true ]
