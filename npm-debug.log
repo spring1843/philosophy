@@ -1,0 +1,62 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'linkscape',
+1 verbose cli   '--save' ]
+2 info using npm@1.3.2
+3 info using node@v0.10.13
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'linkscape', null ]
+7 verbose cache add name=undefined spec="linkscape" args=["linkscape",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'linkscape',
+8 verbose parsed url   path: 'linkscape',
+8 verbose parsed url   href: 'linkscape' }
+9 silly lockFile 8edce19a-linkscape linkscape
+10 verbose lock linkscape C:\Users\Nicolas\AppData\Roaming\npm-cache\8edce19a-linkscape.lock
+11 silly lockFile 8edce19a-linkscape linkscape
+12 silly lockFile 8edce19a-linkscape linkscape
+13 verbose addNamed [ 'linkscape', '' ]
+14 verbose addNamed [ null, '*' ]
+15 silly lockFile 8491c76b-linkscape linkscape@
+16 verbose lock linkscape@ C:\Users\Nicolas\AppData\Roaming\npm-cache\8491c76b-linkscape.lock
+17 silly addNameRange { name: 'linkscape', range: '*', hasData: false }
+18 verbose url raw linkscape
+19 verbose url resolving [ 'https://registry.npmjs.org/', './linkscape' ]
+20 verbose url resolved https://registry.npmjs.org/linkscape
+21 info trying registry request attempt 1 at 22:42:08
+22 http GET https://registry.npmjs.org/linkscape
+23 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
+24 info trying registry request attempt 2 at 22:42:18
+25 http GET https://registry.npmjs.org/linkscape
+26 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND
+27 info trying registry request attempt 3 at 22:43:18
+28 http GET https://registry.npmjs.org/linkscape
+29 silly lockFile 8491c76b-linkscape linkscape@
+30 silly lockFile 8491c76b-linkscape linkscape@
+31 error network getaddrinfo ENOTFOUND
+31 error network This is most likely not a problem with npm itself
+31 error network and is related to network connectivity.
+31 error network In most cases you are behind a proxy or have bad network settings.
+31 error network
+31 error network If you are behind a proxy, please make sure that the
+31 error network 'proxy' config is set properly.  See: 'npm help config'
+32 error System Windows_NT 6.2.9200
+33 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "linkscape" "--save"
+34 error cwd C:\Users\Nicolas\Desktop\Projects\philosophy
+35 error node -v v0.10.13
+36 error npm -v 1.3.2
+37 error syscall getaddrinfo
+38 error code ENOTFOUND
+39 error errno ENOTFOUND
+40 verbose exit [ 1, true ]
