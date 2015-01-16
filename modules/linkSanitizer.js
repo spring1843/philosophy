@@ -74,7 +74,12 @@ module.exports = exports = function () {
         links = sanitizedLinks
     }
 
-    var sanitize = function (uncleanLinks) {
+    var removeUrl = function(url){
+        while(links.indexOf(url) != -1)
+            links.splice(links.indexOf(url), 1);
+    }
+
+    var sanitize = function (url, uncleanLinks) {
         links = uncleanLinks;
         removeElementObjectFromLinks();
         removeCitations();
@@ -83,6 +88,8 @@ module.exports = exports = function () {
         removeImageLinks();
         keepOnlyLinks();
         makeLinksUnique();
+        removeUrl(url);
+
         return links;
     }
 

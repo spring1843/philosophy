@@ -1,7 +1,7 @@
 module.exports.inject = function (di) {
 
     var dep = di;
-    var scraper = dep.scraper || require('./scraper');
+    var scraper = dep.scraper || require('./scraper').inject(di);
     var destinationUrl = dep.destination || 'http://en.wikipedia.org/wiki/Philosophy';
     var path = [];
     var visits = [];
@@ -45,8 +45,10 @@ module.exports.inject = function (di) {
         if (path.length === 0) {
             path.push(wikiPageLink.link);
             root = wikiPageLink;
+            visits.push(root.link);
             if (hasChildren(root) === true) {
                 maxNumberOfVisits = root.children.length * maxDepth;
+                console.log("maxNumberOfVisits set to", maxNumberOfVisits);
             } else {
                 callback(null);
             }
@@ -54,13 +56,17 @@ module.exports.inject = function (di) {
     }
 
     var checkForSuccess = function (wikiPageLink, callback) {
-        console.log('is linked to Philosophy?', isLinkedToPhilosophy(wikiPageLink));
+        console.log('is linked to Philosophy?',wikiPageLink.link, isLinkedToPhilosophy(wikiPageLink));
         if (isLinkedToPhilosophy(wikiPageLink)) {
-            callback(path);
-            console.log("FOUND PATH!", path);
+            finalizeSuccess(wikiPageLink, callback);
             return true;
         }
         return false;
+    }
+
+    var finalizeSuccess = function(wikiPageLink, callback){
+        console.log("Finalizing",visits, path)
+        callback(path);
     }
 
     var isLinkedToPhilosophy = function (wikiPageLink) {
@@ -70,7 +76,6 @@ module.exports.inject = function (di) {
             return false;
     }
 
-
     var checkForMxaxDepth = function () {
         if (path.length < maxDepth)
             return true;
@@ -78,12 +83,11 @@ module.exports.inject = function (di) {
     }
 
     var depthFirstSearch = function (wikiPageLink, callback) {
-        for (var i in wikiPageLink.children) {
-            if (checkForMxaxDepth()) {
-                var child = wikiPageLink.children[i];
-                visitChild(child, callback);
-            }
-        }
+        wikiPageLink.children.forEach(function(childLink){
+            if (checkForMxaxDepth() == false)
+                return;
+            visitChild(childLink, callback);
+        });
     }
 
     var hasVisitedChild = function (childLink) {
