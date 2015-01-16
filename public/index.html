@@ -15,9 +15,9 @@
 
     <div class="site-wrapper-inner">
 
-        <div class="cover-container">
+        <div class="cover-container" ng-controller="MainController">
 
-            <div class="inner cover" ng-controller="MainController" >
+            <div class="inner cover"  >
                 <h1 class="cover-heading">Get to Philosophy</h1>
 
                 <p class="lead">
@@ -25,9 +25,7 @@
                            placeholder="Enter Wikipedia Address like http://en.wikipedia.org/wiki/Lifestyle">
                 </p>
 
-
                 <p>
-
                     <a ng-click="getPath()" class="btn btn-primary">Find</a>
                 </p>
 
@@ -40,7 +38,8 @@
             </div>
 
             <div class="mastfoot">
-                <div class="inner">
+                <div class="inner" ng-show="path.length > 0">
+                    {{ path.length -2 }} hop(s)
                 </div>
             </div>
 
