@@ -6,9 +6,9 @@ module.exports.inject = function (di) {
     var path = [];
     var visits = [];
     var root = null;
-    var scrapes = 0;
     var maxDepth = dep.maxDepth || 6;
     var maxNumberOfVisits = null;
+    var isPathFoundAlready = false;
 
     var find = function (url, callback) {
         console.log('Scraping', url);
@@ -50,17 +50,26 @@ module.exports.inject = function (di) {
     }
 
     var checkForSuccess = function (wikiPageLink, callback) {
-        console.log('is linked to Philosophy?',wikiPageLink.link, isLinkedToPhilosophy(wikiPageLink));
-        if (isLinkedToPhilosophy(wikiPageLink)) {
-            finalizeSuccess(wikiPageLink, callback);
+        isSuccessFull = isLinkedToPhilosophy(wikiPageLink);
+        console.log('is linked to Philosophy?',isSuccessFull,wikiPageLink.link);
+        if (isSuccessFull === true) {
+            if(isPathFoundAlready === false)
+                finalizeSuccess(wikiPageLink, callback);
+
+            saveSuccess();
             return true;
         }
         return false;
     }
 
+    var saveSuccess = function(){
+
+    }
+
     var finalizeSuccess = function(wikiPageLink, callback){
-        console.log("Finalizing",visits, path)
-        callback(path);
+        isPathFoundAlready = true;
+        console.log("Finalizing",visits, path);
+            callback(path);
     }
 
     var isLinkedToPhilosophy = function (wikiPageLink) {

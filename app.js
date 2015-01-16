@@ -9,16 +9,16 @@ di.WikiPageLink = require('./models/WikiPageLink').inject(di);
 var pathToPhilosophy = require('./modules/pathToPhilosophy').inject(di);
 var scraper = require('./modules/scraper').inject(di);
 
-app.get('/pathToPhilosophy', function(request, response){
-    pathToPhilosophy.find(request.query.url, function(data){
+app.get('/pathToPhilosophy', function (request, response) {
+    pathToPhilosophy.find(request.query.url, function (data) {
         console.log("caller is", arguments.callee.caller.toString());
         response.json(data);
         response.end;
     });
 });
 
-app.get('/scrape', function(request, response){
-    scraper.getWikiPageLinks(request.query.url, function(data){
+app.get('/scrape', function (request, response) {
+    scraper.getWikiPageLinks(request.query.url, function (data) {
         response.json(data);
         response.end;
     });
