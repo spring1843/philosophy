@@ -1,4 +1,0 @@
-Scraping http://en.wikipedia.org/wiki/Lifestyle_(sociology)
-Searching DB for  http://en.wikipedia.org/wiki/Lifestyle_(sociology)
-maxNumberOfVisits set to 186
-is linked to Philosophy? http://en.wikipedia.org/wiki/Lifestyle_(sociology) false

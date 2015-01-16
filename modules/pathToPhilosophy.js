@@ -16,7 +16,6 @@ module.exports.inject = function (di) {
     }
 
     var recursiveFind = function (url, callback) {
-        checkForMaxVisits(callback);
         scraper.getWikiPageLinks(url, function (wikiPageLink) {
             handleRoot(wikiPageLink, callback);
 
@@ -28,11 +27,6 @@ module.exports.inject = function (di) {
 
             depthFirstSearch(wikiPageLink, callback);
         });
-    }
-
-    var checkForMaxVisits = function (callback) {
-        if (++scrapes == maxNumberOfVisits)
-            callback(null);
     }
 
     var hasChildren = function (wikiPageLink) {
@@ -97,7 +91,7 @@ module.exports.inject = function (di) {
     }
 
     var visitChild = function (childLink, callback) {
-        if (hasVisitedChild(childLink) === true)
+        if (hasVisitedChild(childLink) === true || visits.length >= maxNumberOfVisits)
             return;
 
         path.push(childLink);
