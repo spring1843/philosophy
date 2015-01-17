@@ -5,5 +5,6 @@ module.exports.inject = function (di) {
     var wikiPageLinkModel =  new mongoose.Schema(wikiPageLinkSchema);
     var WikiPageLink = mongoose.model('WikiPageLink',wikiPageLinkModel);
 
+
     return WikiPageLink;
 };

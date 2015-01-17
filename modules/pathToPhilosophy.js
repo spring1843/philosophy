@@ -3,6 +3,7 @@ module.exports.inject = function (di) {
     var dep = di;
     var scraper = dep.scraper || require('./scraper').inject(di);
     var destinationUrl = dep.destination || 'http://en.wikipedia.org/wiki/Philosophy';
+    var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
 
     var visits = [];
     var root = null;
@@ -65,15 +66,28 @@ module.exports.inject = function (di) {
             if(isPathFoundAlready === false) {
                 finalizeSuccess(wikiPageLink, callback);
             }
-
-            saveSuccess();
+            saveSuccess(wikiPageLink);
             return true;
         }
         return false;
     }
 
-    var saveSuccess = function(){
-
+    var saveSuccess = function(wikiPageLink){
+        var path = findPathFromLinkToDestination(wikiPageLink.link);
+        return;
+        WikiPageLink.findOne({link: wikiPageLink.link}, function (err, doc){
+            doc.path = path;
+            doc.save();
+        });
+    }
+    var findPathFromLinkToDestination = function(link){
+        var path = findPath(link);
+        var linkPosition = path.indexOf(link);
+        var linkDistanceFromEndOfPath = path.length - linkPosition -1;
+        console.log('path', path)
+        pathFromLinkToDestination = path.splice(linkPosition, linkDistanceFromEndOfPath);
+        console.log('link',link, 'linkposition', linkPosition, 'linkDistance', linkDistanceFromEndOfPath, 'path to destination', pathFromLinkToDestination);
+        return pathFromLinkToDestination.reverse();
     }
 
     var findParent = function(wikiPageLink){
@@ -92,14 +106,10 @@ module.exports.inject = function (di) {
         path.push(destinationUrl);
         path.push(link);
         var parent = findParent(link);
-        console.log('visits', visits[0]);
-        console.log('entering loop for parent of', parent, findParent(parent));
         while(parent != null){
             path.push(parent);
             parent = findParent(parent);
         }
-        console.log('parent for', link, parent);
-
         return path.reverse();
     }
 
