@@ -3,8 +3,7 @@ var app = express();
 
 var di = {};
 di.mongoose = require('mongoose');
-///di.mongoose.connect('PUT CONNECTION STRING HERE');
-di.mongoose.connect('mongodb://publicdata:rOuqBD3yv2XwJFdUHOtn@ds029051.mongolab.com:29051/heroku_app32713545');
+di.mongoose.connect('PUT CONNECTION STRING HERE');
 
 di.WikiPageLink = require('./models/WikiPageLink').inject(di);
 di.WikiPath = require('./models/WikiPath').inject(di);
