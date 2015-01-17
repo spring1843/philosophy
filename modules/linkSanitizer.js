@@ -14,7 +14,7 @@ module.exports = exports = function () {
     var removeCitations = function () {
         var sanitizedLinks = [];
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             if (link.link != null)
                 sanitizedLinks.push(link);
         }
@@ -24,7 +24,7 @@ module.exports = exports = function () {
         var sanitizedLinks = [];
         var wikiLinkPattern = "http://en.wikipedia.org/wiki/";
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             if (link.href != link.link && link.link.indexOf(wikiLinkPattern) === 0)
                 sanitizedLinks.push(link);
         }
@@ -34,7 +34,7 @@ module.exports = exports = function () {
     var removeNonArticlePages = function () {
         var sanitizedLinks = [];
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             if (link.href.indexOf(':') == -1)
                 sanitizedLinks.push(link);
         }
@@ -44,7 +44,7 @@ module.exports = exports = function () {
     var removeImageLinks = function () {
         var sanitizedLinks = [];
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             if (link.text == link.html && link.text != '')
                 sanitizedLinks.push(link);
         }
@@ -54,7 +54,7 @@ module.exports = exports = function () {
     var keepOnlyLinks = function () {
         var sanitizedLinks = [];
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             sanitizedLinks.push(link.link);
         }
         links = sanitizedLinks
@@ -65,7 +65,7 @@ module.exports = exports = function () {
         var uniqueLinks = [];
 
         for (i in links) {
-            link = links[i];
+            var link = links[i];
             if (uniqueLinks.indexOf(link) == -1) {
                 uniqueLinks.push(link);
                 sanitizedLinks.push(link);
@@ -74,8 +74,8 @@ module.exports = exports = function () {
         links = sanitizedLinks
     }
 
-    var removeUrl = function(url){
-        while(links.indexOf(url) != -1)
+    var removeUrl = function (url) {
+        while (links.indexOf(url) != -1)
             links.splice(links.indexOf(url), 1);
     }
 

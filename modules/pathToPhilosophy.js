@@ -74,14 +74,14 @@ module.exports.inject = function (di) {
         var isSuccessful = checkForSuccess(wikiPageLink, callback);
         var isFailed = checkForFailure(callback);
 
-        if(isFailed === true || isSuccessful === true)
+        if (isFailed === true || isSuccessful === true)
             return true;
         else
             return false;
     }
 
     var checkForFailure = function (callback) {
-        if(isResultsSentBack === false && scrapes.length >= maxNumberOfVisits) {
+        if (isResultsSentBack === false && scrapes.length >= maxNumberOfVisits) {
             finalizeFailure(callback);
             return true;
         }
@@ -150,7 +150,7 @@ module.exports.inject = function (di) {
     }
 
     var finalizeSuccess = function (wikiPageLink, callback) {
-        if(isResultsSentBack === false) {
+        if (isResultsSentBack === false) {
             var path = findPath(wikiPageLink.link);
             callback({path: path, crawls: visits.length, hops: path.length - 2});
             console.log('Success sent back');
@@ -160,7 +160,7 @@ module.exports.inject = function (di) {
     }
 
     var finalizeFailure = function (callback) {
-        if(isResultsSentBack === false) {
+        if (isResultsSentBack === false) {
             callback({path: null, crawls: visits.length, hops: null});
             console.log('Failure sent back');
         }
@@ -193,7 +193,7 @@ module.exports.inject = function (di) {
             return;
         }
 
-        if(visits.length >= maxNumberOfVisits){
+        if (visits.length >= maxNumberOfVisits) {
             return;
         }
 
