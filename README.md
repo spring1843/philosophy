@@ -12,7 +12,7 @@ $ cd philosophy
 $ npm install
 $ npm start
 ```
-
+Add your mongoDB connection string in config.json
 
 ## Features
 
