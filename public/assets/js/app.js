@@ -41,6 +41,6 @@
 })(window.angular);
 
 (function ($) {
-    $.backstretch("http://upload.wikimedia.org/wikipedia/commons/1/1b/Greek_philosopher_busts.jpg");
+    $.backstretch("https://upload.wikimedia.org/wikipedia/commons/1/1b/Greek_philosopher_busts.jpg");
 })(window.$);
 
