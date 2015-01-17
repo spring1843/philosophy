@@ -1,8 +1,8 @@
 var wikiPageLinkSchema =
 {
-    link: 'string',
-    children: [],
-    path: []
+    link: String,
+    children: [String],
+    path: [String]
 };
 
 module.exports = wikiPageLinkSchema;

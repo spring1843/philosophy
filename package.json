@@ -1,18 +1,30 @@
 {
-  "name": "philosophy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "get-to-philosophy",
+  "version": "0.1.0",
+  "description": "Find the path from a Wikipedia article to Philosophy",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine-node spec",
+    "start": "node app.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Yasser.ca",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.10.8",
     "mongoose": "^3.8.21",
     "mongoose-mock" : "^0.4.0",
     "request": "^2.51.0",
     "linkscrape": "0.1.0"
-  }
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yasser1984ir/philosophy"
+  },
+  "keywords": [
+    "get to philosophy",
+    "wikipedia"
+  ]
 }

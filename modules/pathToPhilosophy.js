@@ -6,10 +6,12 @@ module.exports.inject = function (di) {
     var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
 
     var visits = [];
+    var scrapes = [];
     var root = null;
-    var isPathFoundAlready = false;
+    var isResultsSentBack = false;
 
     var maxDepth = dep.maxDepth || 6;
+    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 200;
     var maxNumberOfVisits = null;
 
     var find = function (url, callback) {
@@ -19,20 +21,22 @@ module.exports.inject = function (di) {
         recursiveFind(newRoot, callback);
     }
 
-    var init = function(){
+    var init = function () {
         visits = [];
+        scrapes = [];
         root = null;
-        isPathFoundAlready = false;
+        isResultsSentBack = false;
     }
 
     var recursiveFind = function (wikiPageLink, callback) {
         scraper.getWikiPageLinks(wikiPageLink.link, function (wikiPageLink) {
+            scrapes.push(wikiPageLink.link);
             handleRoot(wikiPageLink, callback);
 
             if (hasChildren(wikiPageLink) === false)
                 return false;
 
-            if (checkForSuccess(wikiPageLink, callback) === true)
+            if (checkResults(wikiPageLink, callback) === true)
                 return true;
 
             depthFirstSearch(wikiPageLink, callback);
@@ -50,7 +54,7 @@ module.exports.inject = function (di) {
             root = wikiPageLink;
             visits.push({link: wikiPageLink.link, parent: null});
             if (hasChildren(root) === true) {
-                maxNumberOfVisits = root.children.length * maxDepth;
+                setMaxNumberOfVisits(root);
                 console.log("maxNumberOfVisits set to", maxNumberOfVisits);
             } else {
                 callback(null);
@@ -58,66 +62,110 @@ module.exports.inject = function (di) {
         }
     }
 
-    var checkForSuccess = function (wikiPageLink, callback) {
-        var isSuccessFull = isLinkedToPhilosophy(wikiPageLink);
-        console.log('is linked to Philosophy?',isSuccessFull,wikiPageLink.link);
-        if (isSuccessFull === true) {
+    var setMaxNumberOfVisits = function (root) {
+        var maxNumberOfVisitsGivenDepth = root.children.length * maxDepth;
+        if (maxNumberOfVisitsGivenDepth > hardMaxNumberOfVisits)
+            maxNumberOfVisits = hardMaxNumberOfVisits
+        else
+            maxNumberOfVisits = maxNumberOfVisitsGivenDepth;
+    }
 
-            if(isPathFoundAlready === false) {
-                finalizeSuccess(wikiPageLink, callback);
-            }
-            saveSuccess(wikiPageLink);
+    var checkResults = function (wikiPageLink, callback) {
+        var isSuccessful = checkForSuccess(wikiPageLink, callback);
+        var isFailed = checkForFailure(callback);
+
+        if(isFailed === true || isSuccessful === true)
+            return true;
+        else
+            return false;
+    }
+
+    var checkForFailure = function (callback) {
+        if(isResultsSentBack === false && scrapes.length >= maxNumberOfVisits) {
+            finalizeFailure(callback);
             return true;
         }
         return false;
     }
 
-    var saveSuccess = function(wikiPageLink){
-        var path = findPathFromLinkToDestination(wikiPageLink.link);
-        return;
-        WikiPageLink.findOne({link: wikiPageLink.link}, function (err, doc){
-            doc.path = path;
-            doc.save();
-        });
-    }
-    var findPathFromLinkToDestination = function(link){
-        var path = findPath(link);
-        var linkPosition = path.indexOf(link);
-        var linkDistanceFromEndOfPath = path.length - linkPosition -1;
-        console.log('path', path)
-        pathFromLinkToDestination = path.splice(linkPosition, linkDistanceFromEndOfPath);
-        console.log('link',link, 'linkposition', linkPosition, 'linkDistance', linkDistanceFromEndOfPath, 'path to destination', pathFromLinkToDestination);
-        return pathFromLinkToDestination.reverse();
+    var checkForSuccess = function (wikiPageLink, callback) {
+        var isSuccessFull = isLinkedToPhilosophy(wikiPageLink);
+        console.log('is linked to Philosophy?', isSuccessFull, wikiPageLink.link);
+        if (isSuccessFull === true) {
+            if (isResultsSentBack === false) {
+                finalizeSuccess(wikiPageLink, callback);
+            }
+            saveSuccessForPath(wikiPageLink);
+            return true;
+        }
+        return false;
     }
 
-    var findParent = function(wikiPageLink){
+    function saveSuccessForLink(path, linkInPath) {
+        console.log('saving success for link', linkInPath);
+        WikiPageLink.findOne({link: linkInPath, path: []}, function (err, wikiPageLink) {
+            if (err || wikiPageLink == null)
+                return;
+            wikiPageLink.path = findSubPathInPath(path, wikiPageLink.link);
+            wikiPageLink.save();
+        });
+    }
+
+    var saveSuccessForPath = function (wikiPageLink) {
+        var path = findPath(wikiPageLink.link);
+        console.log('saving success for path', path);
+        path.forEach(function (linkInPath) {
+            if (linkInPath === destinationUrl)
+                return;
+            saveSuccessForLink(path, linkInPath);
+        });
+    }
+
+    var findSubPathInPath = function (path, link) {
+        var linkIndex = path.indexOf(link);
+        return path.slice(linkIndex, path.length - 1);
+    }
+
+    var findParent = function (wikiPageLink) {
         var parent = null;
-        visits.some(function(visit){
-            if(visit.link == wikiPageLink) {
-                    parent = visit.parent;
-                    return true;
+        visits.some(function (visit) {
+            if (visit.link == wikiPageLink) {
+                parent = visit.parent;
+                return true;
             }
         });
         return parent;
     }
 
-    var findPath = function(link){
+    var findPath = function (link) {
         var path = [];
         path.push(destinationUrl);
         path.push(link);
         var parent = findParent(link);
-        while(parent != null){
+        while (parent != null) {
             path.push(parent);
             parent = findParent(parent);
         }
         return path.reverse();
     }
 
-    var finalizeSuccess = function(wikiPageLink, callback){
-        isPathFoundAlready = true;
+    var finalizeSuccess = function (wikiPageLink, callback) {
+        if(isResultsSentBack === false) {
+            var path = findPath(wikiPageLink.link);
+            callback({path: path, crawls: visits.length, hops: path.length - 2});
+            console.log('Success sent back');
+        }
 
-        var path = findPath(wikiPageLink.link);
-        callback({path:path, hops:path.length});
+        isResultsSentBack = true;
+    }
+
+    var finalizeFailure = function (callback) {
+        if(isResultsSentBack === false) {
+            callback({path: null, crawls: visits.length, hops: null});
+            console.log('Failure sent back');
+        }
+
+        isResultsSentBack = true;
     }
 
     var isLinkedToPhilosophy = function (wikiPageLink) {
@@ -128,7 +176,7 @@ module.exports.inject = function (di) {
     }
 
     var depthFirstSearch = function (wikiPageLink, callback) {
-        wikiPageLink.children.forEach(function(childLink){
+        wikiPageLink.children.forEach(function (childLink) {
             visitChild(wikiPageLink.link, childLink, callback);
         });
     }
@@ -140,8 +188,14 @@ module.exports.inject = function (di) {
     }
 
     var visitChild = function (parent, childLink, callback) {
-        if (hasVisitedChild(childLink) === true || visits.length >= maxNumberOfVisits)
+
+        if (hasVisitedChild(childLink) === true) {
             return;
+        }
+
+        if(visits.length >= maxNumberOfVisits){
+            return;
+        }
 
         var child = {link: childLink, parent: parent};
         visits.push(child);

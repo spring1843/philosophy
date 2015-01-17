@@ -88,6 +88,7 @@ module.exports = exports = function () {
         removeImageLinks();
         keepOnlyLinks();
         makeLinksUnique();
+        removeUrl('http://en.wikipedia.org/wiki/Main_Page');
         removeUrl(url);
 
         return links;

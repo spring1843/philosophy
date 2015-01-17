@@ -4,6 +4,8 @@ var app = express();
 var di = {};
 di.mongoose = require('mongoose');
 di.mongoose.connect('mongodb://publicdata:rOuqBD3yv2XwJFdUHOtn@ds029051.mongolab.com:29051/heroku_app32713545');
+
+
 di.WikiPageLink = require('./models/WikiPageLink').inject(di);
 
 var pathToPhilosophy = require('./modules/pathToPhilosophy').inject(di);
@@ -24,5 +26,7 @@ app.get('/scrape', function (request, response) {
 });
 
 app.use(express.static('./public'));
-
-app.listen(3005);
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'), function () {
+    console.log("Get to philosophy app is running at localhost:" + app.get('port'));
+});

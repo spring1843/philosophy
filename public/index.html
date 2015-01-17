@@ -30,14 +30,22 @@
                     <a ng-click="getPath()" class="btn btn-lg btn-primary">Search for a path</a>
                 </p>
 
+                <p ng-show="searchInProgress">
+                    <img src="/assets/img/ajax-loader.gif" />
+                </p>
+
+                <p ng-show="error">
+                    <h2>{{error}}</h2>
+                </p>
+
                 <p>
                     <h2 ng-repeat="item in path"><a href="{{item}}" target="_blank">{{item}}</a></h2>
                 </p>
             </div>
 
             <div class="mastfoot">
-                <div class="inner" ng-show="path.length > 0">
-                    {{ path.length -2 }} hop(s)
+                <div class="inner" ng-show="hops > 0">
+                    {{ hops }} hop(s) after {{ crawls }} crawls.
                 </div>
             </div>
 

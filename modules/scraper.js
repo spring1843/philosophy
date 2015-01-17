@@ -10,7 +10,7 @@ module.exports.inject = function (di) {
 
     var getWikiPageLinks = function (url, callback) {
         console.log("Searching DB for ", url);
-        WikiPageLink.findOne({link: url}, {link:1, children:1, path:1, _id:0}).exec(function (error, wikiPageLink) {
+        WikiPageLink.findOne({link: url}, {link: 1, children: 1, path: 1, _id: 0}).exec(function (error, wikiPageLink) {
 
             if (error)
                 console.log('error', error)
@@ -24,11 +24,11 @@ module.exports.inject = function (di) {
     }
 
 
-    var doesNeedRefetch = function(wikiPageLink){
+    var doesNeedRefetch = function (wikiPageLink) {
         if (wikiPageLink === undefined || wikiPageLink === null || wikiPageLink.children === undefined)
             return true;
 
-        if(wikiPageLink && wikiPageLink.children && wikiPageLink.children.length === 0)
+        if (wikiPageLink && wikiPageLink.children && wikiPageLink.children.length === 0)
             return true;
 
         return false;
@@ -47,10 +47,9 @@ module.exports.inject = function (di) {
     var prepareWikiPageLink = function (url, body, callback) {
         linkscrape(url, body, function (links) {
             var sanitizedLinks = linkSanitizer.sanitize(url, links);
-            wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
-            console.log("Saving new WikiPageLink");
+            var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
+            console.log("Saving new WikiPageLink", url);
             wikiPageLink.save();
-            console.log("calling back with sanitized links");
             callback(wikiPageLink);
         });
     }
