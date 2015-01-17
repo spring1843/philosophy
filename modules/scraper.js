@@ -11,7 +11,6 @@ module.exports.inject = function (di) {
     var getWikiPageLinks = function (url, callback) {
         console.log("Searching DB for ", url);
         WikiPageLink.findOne({link: url}, {link: 1, children: 1, path: 1, _id: 0}).exec(function (error, wikiPageLink) {
-
             if (error)
                 console.log('error', error)
 
@@ -22,7 +21,6 @@ module.exports.inject = function (di) {
 
         });
     }
-
 
     var doesNeedRefetch = function (wikiPageLink) {
         if (wikiPageLink === undefined || wikiPageLink === null || wikiPageLink.children === undefined)
@@ -37,8 +35,10 @@ module.exports.inject = function (di) {
     var fetchUrl = function (url, callback) {
         console.log("Fetching", url);
         request(url, function (error, response, body) {
-            if (error || response.statusCode != 200)
+            if (error || response.statusCode != 200) {
+                console.log("Error, could not fetch", url);
                 callback(null);
+            }
 
             prepareWikiPageLink(url, body, callback);
         });
@@ -47,9 +47,14 @@ module.exports.inject = function (di) {
     var prepareWikiPageLink = function (url, body, callback) {
         linkscrape(url, body, function (links) {
             var sanitizedLinks = linkSanitizer.sanitize(url, links);
+            console.log("Creating WikiPageLink in DB for", url);
             var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
-            console.log("Saving new WikiPageLink", url);
-            wikiPageLink.save();
+            wikiPageLink.save(function(error){
+                if(error)
+                    console.log("Error creating new WikiPageLink");
+
+                console.log("Created WikiPageLink in DB for", url);
+            });
             callback(wikiPageLink);
         });
     }

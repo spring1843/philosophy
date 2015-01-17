@@ -5,7 +5,7 @@
 
     function MainController($scope, $http) {
         $scope.path = [];
-        $scope.url = "http://en.wikipedia.org/wiki/Lifestyle";
+        $scope.url = "http://en.wikipedia.org/wiki/Food";
         $scope.searchInProgress = false;
         $scope.hops = null
         $scope.crawls = null

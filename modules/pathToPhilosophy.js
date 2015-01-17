@@ -4,6 +4,7 @@ module.exports.inject = function (di) {
     var scraper = dep.scraper || require('./scraper').inject(di);
     var destinationUrl = dep.destination || 'http://en.wikipedia.org/wiki/Philosophy';
     var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
+    var WikiPath = dep.WikiPath || require('../models/WikiPath').inject(dep);
 
     var visits = [];
     var scrapes = [];
@@ -11,21 +12,21 @@ module.exports.inject = function (di) {
     var isResultsSentBack = false;
 
     var maxDepth = dep.maxDepth || 6;
-    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 200;
+    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 300;
     var maxNumberOfVisits = null;
-
-    var find = function (url, callback) {
-        console.log('Scraping', url);
-        init();
-        var newRoot = {link: url, parent: null};
-        recursiveFind(newRoot, callback);
-    }
 
     var init = function () {
         visits = [];
         scrapes = [];
         root = null;
         isResultsSentBack = false;
+    }
+
+    var find = function (url, callback) {
+        console.log('Scraping', url);
+        init();
+        var newRoot = {link: url, parent: null};
+        recursiveFind(newRoot, callback);
     }
 
     var recursiveFind = function (wikiPageLink, callback) {
@@ -89,11 +90,21 @@ module.exports.inject = function (di) {
     }
 
     var checkForSuccess = function (wikiPageLink, callback) {
+        if (checkForDirectLink(wikiPageLink, callback) === true)
+            return true;
+
+        if (checkForExistenceInPaths(wikiPageLink, callback) === true)
+            return true;
+
+        return false;
+    }
+
+    var checkForDirectLink = function (wikiPageLink, callback) {
         var isSuccessFull = isLinkedToPhilosophy(wikiPageLink);
-        console.log('is linked to Philosophy?', isSuccessFull, wikiPageLink.link);
+        console.log('Is linked to Philosophy?', isSuccessFull, wikiPageLink.link);
         if (isSuccessFull === true) {
             if (isResultsSentBack === false) {
-                finalizeSuccess(wikiPageLink, callback);
+                finalizeSuccess(wikiPageLink, null, callback);
             }
             saveSuccessForPath(wikiPageLink);
             return true;
@@ -101,29 +112,47 @@ module.exports.inject = function (di) {
         return false;
     }
 
-    function saveSuccessForLink(path, linkInPath) {
-        console.log('saving success for link', linkInPath);
-        WikiPageLink.findOne({link: linkInPath, path: []}, function (err, wikiPageLink) {
-            if (err || wikiPageLink == null)
+    var checkForExistenceInPaths = function (wikiPageLink, callback) {
+        console.log("Does link exist in a successful path?", wikiPageLink.link);
+
+        WikiPath.findOne({path: wikiPageLink.link}, function (err, wikiPageLinkWithPath) {
+            if (err || wikiPageLinkWithPath == null)
                 return;
-            wikiPageLink.path = findSubPathInPath(path, wikiPageLink.link);
-            wikiPageLink.save();
+
+            var subPath = findSubPathInPath(wikiPageLinkWithPath.path, wikiPageLink.link);
+
+            if (isResultsSentBack === false)
+                finalizeSuccess(wikiPageLink, subPath, callback);
+            console.log('Link', wikiPageLink.link, 'exists in path of', wikiPageLinkWithPath.link);
         });
+
     }
 
     var saveSuccessForPath = function (wikiPageLink) {
         var path = findPath(wikiPageLink.link);
-        console.log('saving success for path', path);
-        path.forEach(function (linkInPath) {
-            if (linkInPath === destinationUrl)
-                return;
-            saveSuccessForLink(path, linkInPath);
+
+        console.log('Saving path', path, "if no path in DB containing", path[0], 'is found');
+        WikiPath.where({path: path[0]}).count(function (err, count) {
+            console.log('Did path already exist?', count);
+            if (count > 0)
+                return
+
+            var wikiPath = new WikiPath({path: path});
+            wikiPath.save(function (error) {
+                if (error)
+                    console.log("Error creating new WikiPath");
+
+                console.log("Created WikiPath in DB for", path);
+            });
         });
     }
 
     var findSubPathInPath = function (path, link) {
         var linkIndex = path.indexOf(link);
-        return path.slice(linkIndex, path.length - 1);
+        if (linkIndex == 0)
+            return path.slice(linkIndex, path.length);
+        else
+            return path.slice(linkIndex, path.length - 1);
     }
 
     var findParent = function (wikiPageLink) {
@@ -149,11 +178,14 @@ module.exports.inject = function (di) {
         return path.reverse();
     }
 
-    var finalizeSuccess = function (wikiPageLink, callback) {
+    var finalizeSuccess = function (wikiPageLink, path, callback) {
         if (isResultsSentBack === false) {
-            var path = findPath(wikiPageLink.link);
-            callback({path: path, crawls: visits.length, hops: path.length - 2});
-            console.log('Success sent back');
+            if (path === null)
+                path = findPath(wikiPageLink.link);
+
+            var results = {path: path, crawls: scrapes.length, hops: path.length - 2};
+            console.log('Success sent back with results', results);
+            callback(results);
         }
 
         isResultsSentBack = true;
@@ -161,8 +193,9 @@ module.exports.inject = function (di) {
 
     var finalizeFailure = function (callback) {
         if (isResultsSentBack === false) {
-            callback({path: null, crawls: visits.length, hops: null});
-            console.log('Failure sent back');
+            var results = {path: null, crawls: visits.length, hops: null};
+            console.log('Failure sent back with results', results);
+            callback(results);
         }
 
         isResultsSentBack = true;
