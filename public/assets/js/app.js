@@ -25,6 +25,11 @@
                     $scope.hops = response.hops;
                     $scope.crawls = response.crawls;
                     $scope.error = null;
+
+                    if(response.crawls > 0 && response.hops == null)
+                        $scope.error = "Couldn't get to Philosophy after " + response.crawls + " crawls";
+
+
                 })
                 .error(function (data, status, headers, config) {
                     $scope.searchInProgress = false;
