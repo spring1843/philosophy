@@ -5,6 +5,8 @@ describe("PathToPhilosophy", function () {
         var di = {};
         di.maxDepth = 4;
         di.scraper = require("./mocks/scraper.js");
+        di.WikiPageLink = require('./mocks/models/WikiPageLink').inject(di);
+        di.WikiPath = require('./mocks/models/WikiPath').inject(di);
         pathToPhilosophy = require('../modules/pathToPhilosophy').inject(di);
     });
 
@@ -18,7 +20,7 @@ describe("PathToPhilosophy", function () {
     it("Should be able to find path with 1 hop", function () {
         var url = "http://en.wikipedia.org/wiki/OneHop"
         pathToPhilosophy.find(url, function (path) {
-            expect(path.length).toEqual(1);
+            expect(path.path.length).toEqual(2);
         });
     });
 
@@ -26,7 +28,7 @@ describe("PathToPhilosophy", function () {
         var url = "http://en.wikipedia.org/wiki/TwoHops"
         pathToPhilosophy.find(url, function (path) {
             console.log("path", path);
-            expect(path.length).toEqual(2);
+            expect(path.path.length).toEqual(3);
         });
     });
 
@@ -34,7 +36,7 @@ describe("PathToPhilosophy", function () {
         var url = "http://en.wikipedia.org/wiki/ThreeHops"
         pathToPhilosophy.find(url, function (path) {
             console.log("path", path);
-            expect(path.length).toEqual(3);
+            expect(path.path.length).toEqual(4);
         });
     });
 
@@ -42,15 +44,15 @@ describe("PathToPhilosophy", function () {
         var url = "http://en.wikipedia.org/wiki/FourHops"
         pathToPhilosophy.find(url, function (path) {
             console.log("path", path);
-            expect(path.length).toEqual(4);
+            expect(path.path.length).toEqual(5);
         });
     });
 
-    it("Should not be able to find a path after a maximum of 4 levels", function () {
+    it("Should not be able to find a path after a maximum of 4 hops", function () {
         var url = "http://en.wikipedia.org/wiki/FiveHops"
         pathToPhilosophy.find(url, function (path) {
             console.log("path", path);
-            expect(path).toEqual(null);
+            expect(path.path).toEqual(null);
         });
     });
 
@@ -58,7 +60,7 @@ describe("PathToPhilosophy", function () {
         var url = "http://en.wikipedia.org/wiki/Loopy1"
         pathToPhilosophy.find(url, function (path) {
             console.log("path", path);
-            expect(path).toEqual(null);
+            expect(path.path).toEqual(null);
         });
     });
 

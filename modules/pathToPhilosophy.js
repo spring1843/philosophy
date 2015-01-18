@@ -114,9 +114,8 @@ module.exports.inject = function (di) {
 
     var checkForExistenceInPaths = function (wikiPageLink, callback) {
         console.log("Does link exist in a successful path?", wikiPageLink.link);
-
         WikiPath.findOne({path: wikiPageLink.link}, function (err, wikiPageLinkWithPath) {
-            if (err || wikiPageLinkWithPath == null)
+            if (err || wikiPageLinkWithPath == null || wikiPageLinkWithPath == undefined)
                 return;
 
             var subPath = findSubPathInPath(wikiPageLinkWithPath.path, wikiPageLink.link);
@@ -125,7 +124,6 @@ module.exports.inject = function (di) {
                 finalizeSuccess(wikiPageLink, subPath, callback);
             console.log('Link', wikiPageLink.link, 'exists in path of', wikiPageLinkWithPath.link);
         });
-
     }
 
     var saveSuccessForPath = function (wikiPageLink) {
@@ -210,8 +208,16 @@ module.exports.inject = function (di) {
 
     var depthFirstSearch = function (wikiPageLink, callback) {
         wikiPageLink.children.forEach(function (childLink) {
-            visitChild(wikiPageLink.link, childLink, callback);
+            if (checkForMaxDepth(wikiPageLink.link) === true)
+                visitChild(wikiPageLink.link, childLink, callback);
         });
+    }
+
+    var checkForMaxDepth = function (link) {
+        var path = findPath(link);
+        if (path.length < maxDepth)
+            return true;
+        return false;
     }
 
     var hasVisitedChild = function (childLink) {
