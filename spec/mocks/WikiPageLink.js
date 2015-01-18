@@ -1,6 +1,6 @@
 module.exports.inject = function (di) {
 
-    var findOne = function(query, returns){
+    var findOne = function(){
         return this;
     }
 

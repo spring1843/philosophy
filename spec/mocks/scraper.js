@@ -78,5 +78,4 @@ module.exports.getWikiPageLinks = function (url, callback) {
         };
     }
     callback(data)
-
 }

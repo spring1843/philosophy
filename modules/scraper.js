@@ -4,9 +4,7 @@ module.exports.inject = function (di) {
     var linkscrape = dep.linkscrape || require('linkscrape');
     var request = dep.request || require('request');
     var linkSanitizer = dep.linkSanitizer || require('./linkSanitizer.js');
-
     var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
-
 
     var getWikiPageLinks = function (url, callback) {
         console.log("Searching DB for ", url);
@@ -58,7 +56,6 @@ module.exports.inject = function (di) {
             callback(wikiPageLink);
         });
     }
-
 
     return {
         getWikiPageLinks: getWikiPageLinks
