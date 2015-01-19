@@ -1,10 +1,10 @@
 var express = require('express');
 var app = express();
-var config = require('./configs').load();
+//var config = require('./configs').load();
 
 var di = {};
 di.mongoose = require('mongoose');
-di.mongoose.connect(config.mongoDbConnectionString);
+di.mongoose.connect("mongodb://publicdata:rOuqBD3yv2XwJFdUHOtn@ds029051.mongolab.com:29051/heroku_app32713545");
 di.WikiPageLink = require('./models/WikiPageLink').inject(di);
 di.WikiPath = require('./models/WikiPath').inject(di);
 
