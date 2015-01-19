@@ -31,6 +31,10 @@ module.exports.inject = function (di) {
 
     var recursiveFind = function (wikiPageLink, callback) {
         scraper.getWikiPageLinks(wikiPageLink.link, function (wikiPageLink) {
+
+            if (checkWikiPageValidity(wikiPageLink) === false)
+                return false;
+
             scrapes.push(wikiPageLink.link);
             handleRoot(wikiPageLink, callback);
 
@@ -42,6 +46,13 @@ module.exports.inject = function (di) {
 
             depthFirstSearch(wikiPageLink, callback);
         });
+    }
+
+    var checkWikiPageValidity = function(wikiPageLink){
+        if(wikiPageLink === null)
+            return false;
+        else
+            return true;
     }
 
     var hasChildren = function (wikiPageLink) {
