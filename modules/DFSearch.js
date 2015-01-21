@@ -47,8 +47,8 @@ module.exports.inject = function (di) {
         });
     }
 
-    var checkWikiPageValidity = function(wikiPageLink){
-        if(wikiPageLink === null)
+    var checkWikiPageValidity = function (wikiPageLink) {
+        if (wikiPageLink === null)
             return false;
         else
             return true;
@@ -231,9 +231,9 @@ module.exports.inject = function (di) {
     }
 
     var hasVisitedChild = function (childLink) {
-        for(var i in visits){
+        for (var i in visits) {
             var visit = visits[i];
-            if(visit.link == childLink)
+            if (visit.link == childLink)
                 return true;
         }
         return false;

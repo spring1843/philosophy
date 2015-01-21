@@ -53,7 +53,7 @@ module.exports.inject = function (di) {
         request(url, function (error, response, body) {
             if (error || response.statusCode != 200) {
                 console.log("Error, could not fetch", url);
-                callback({error:'could not browser' + url});
+                callback({error: 'could not browser' + url});
             }
 
             prepareWikiPageLink(url, body, callback);
@@ -65,7 +65,7 @@ module.exports.inject = function (di) {
         request(url, function (error, response, body) {
             if (error || response.statusCode != 200) {
                 console.log("Error, could not fetch", url);
-                callback({error:'could not browser' + url});
+                callback({error: 'could not browser' + url});
             }
 
             prepareWikiPageLinkForFirstLink(url, body, callback);
@@ -86,8 +86,8 @@ module.exports.inject = function (di) {
             var sanitizedLinks = linkSanitizer.sanitizeLinks(url, links);
             console.log("Creating WikiPageLink in DB for", url);
             var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
-            wikiPageLink.save(function(error){
-                if(error)
+            wikiPageLink.save(function (error) {
+                if (error)
                     console.log("Error creating new WikiPageLink", error);
 
                 console.log("Created WikiPageLink in DB for", url);
@@ -98,6 +98,6 @@ module.exports.inject = function (di) {
 
     return {
         getWikiPageLinks: getWikiPageLinks,
-        getWikiPageFirstLink : getWikiPageFirstLink
+        getWikiPageFirstLink: getWikiPageFirstLink
     };
 };

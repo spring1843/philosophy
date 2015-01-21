@@ -45,8 +45,8 @@ module.exports.inject = function (di) {
         });
     }
 
-    var checkWikiPageValidity = function(wikiPageLink){
-        if(wikiPageLink === null)
+    var checkWikiPageValidity = function (wikiPageLink) {
+        if (wikiPageLink === null)
             return false;
         else
             return true;
@@ -103,9 +103,9 @@ module.exports.inject = function (di) {
         });
     }
 
-    var getPath = function(){
+    var getPath = function () {
         var path = [];
-        for(i in visits){
+        for (i in visits) {
             path.push(visits[i].link);
         }
         return path;
@@ -124,7 +124,7 @@ module.exports.inject = function (di) {
 
     var finalizeFailure = function (message, callback) {
         if (isResultsSentBack === false) {
-            var results = {path: null, crawls: visits.length, hops: null, message:message};
+            var results = {path: null, crawls: visits.length, hops: null, message: message};
             console.log('Failure sent back with results', results);
             callback(results);
         }
@@ -143,8 +143,8 @@ module.exports.inject = function (di) {
         if (checkForMaxDepth(wikiPageLink.link) === true) {
             console.log('visiting child', wikiPageLink.children[0]);
             visitChild(wikiPageLink.link, wikiPageLink.children[0], callback);
-        }else{
-            finalizeFailure('max depth reached',callback);
+        } else {
+            finalizeFailure('max depth reached', callback);
         }
     }
 
@@ -155,9 +155,9 @@ module.exports.inject = function (di) {
     }
 
     var hasVisitedChild = function (childLink) {
-        for(var i in visits){
+        for (var i in visits) {
             var visit = visits[i];
-            if(visit.link == childLink)
+            if (visit.link == childLink)
                 return true;
         }
         return false;
