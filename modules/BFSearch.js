@@ -32,7 +32,7 @@ module.exports.inject = function (di) {
     }
 
     var recursiveFind = function (wikiPageLink, callback) {
-        scraper.getWikiPageLinks(wikiPageLink.link, function (wikiPageLink) {
+        scraper.getWikiPageFirstLink(wikiPageLink.link, function (wikiPageLink) {
 
             if (checkWikiPageValidity(wikiPageLink) === false)
                 return false;
@@ -179,14 +179,15 @@ module.exports.inject = function (di) {
 
     var findPath = function (link) {
         var path = [];
-        path.push(destinationUrl);
         path.push(link);
         var parent = findParent(link);
         while (parent != null) {
             path.push(parent);
             parent = findParent(parent);
         }
-        return path.reverse();
+        path.push(destinationUrl);
+
+        return path;
     }
 
     var finalizeSuccess = function (wikiPageLink, path, callback) {

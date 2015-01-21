@@ -20,6 +20,21 @@ module.exports.inject = function (di) {
         });
     }
 
+    var getWikiPageFirstLink = function (url, callback) {
+        console.log("Searching DB for ", url);
+        WikiPageLink.findOne({link: url}, {link: 1, children: 1, path: 1, _id: 0}).exec(function (error, wikiPageLink) {
+            if (error)
+                wikiPageLink.children = [wikiPageLink[0]];
+                console.log('error', error)
+
+            if (doesNeedRefetch(wikiPageLink) === true)
+                fetchUrlForFirstLink(url, callback);
+            else
+                callback(wikiPageLink);
+
+        });
+    }
+
     var doesNeedRefetch = function (wikiPageLink) {
         if (wikiPageLink === undefined || wikiPageLink === null || wikiPageLink.children === undefined)
             return true;
@@ -42,6 +57,34 @@ module.exports.inject = function (di) {
         });
     }
 
+    var fetchUrlForFirstLink = function (url, callback) {
+        console.log("Fetching", url);
+        request(url, function (error, response, body) {
+            if (error || response.statusCode != 200) {
+                console.log("Error, could not fetch", url);
+                callback(null);
+            }
+
+            prepareWikiPageLinkForFirstLink(url, body, callback);
+        });
+    }
+
+    var prepareWikiPageLinkForFirstLink = function (url, body, callback) {
+        linkscrape(url, body, function (links) {
+            var sanitizedLinks = linkSanitizer.sanitize(url, links);
+            console.log("Creating WikiPageLink in DB for", url);
+            var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
+            wikiPageLink.save(function(error){
+                if(error)
+                    console.log("Error creating new WikiPageLink");
+
+                console.log("Created WikiPageLink in DB for", url);
+            });
+            wikiPageLink.children = wikiPageLink[0];
+            callback(wikiPageLink);
+        });
+    }
+
     var prepareWikiPageLink = function (url, body, callback) {
         linkscrape(url, body, function (links) {
             var sanitizedLinks = linkSanitizer.sanitize(url, links);
@@ -58,6 +101,7 @@ module.exports.inject = function (di) {
     }
 
     return {
-        getWikiPageLinks: getWikiPageLinks
+        getWikiPageLinks: getWikiPageLinks,
+        getWikiPageFirstLink : getWikiPageFirstLink
     };
 };
