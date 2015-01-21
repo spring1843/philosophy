@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var config = require('./configs').load();
+//var config = require('./configs').load();
 
 var di = {};
 di.cheerio = require('cheerio');
