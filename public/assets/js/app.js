@@ -5,7 +5,7 @@
 
     function MainController($scope, $http) {
         $scope.path = [];
-        $scope.url = "http://en.wikipedia.org/wiki/Food";
+        $scope.url = "http://en.wikipedia.org/wiki/Reality";
         $scope.searchInProgress = false;
         $scope.hops = null
         $scope.crawls = null
@@ -27,8 +27,7 @@
                     $scope.error = null;
 
                     if(response.crawls > 0 && response.hops == null)
-                        $scope.error = "Couldn't get to Philosophy after " + response.crawls + " crawls";
-
+                        $scope.error = response.message + " Could not get to Philosophy after " + response.crawls + " crawls";
 
                 })
                 .error(function (data, status, headers, config) {

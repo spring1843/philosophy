@@ -1,4 +1,7 @@
-module.exports = exports = function () {
+module.exports.inject = function (di) {
+
+    var dep = di;
+    var cheerio = dep.cheerio || require('cheerio');
 
     var links = links;
 
@@ -79,7 +82,7 @@ module.exports = exports = function () {
             links.splice(links.indexOf(url), 1);
     }
 
-    var sanitize = function (url, uncleanLinks) {
+    var sanitizeLinks = function (url, uncleanLinks) {
         links = uncleanLinks;
         removeElementObjectFromLinks();
         removeCitations();
@@ -88,13 +91,21 @@ module.exports = exports = function () {
         removeImageLinks();
         keepOnlyLinks();
         makeLinksUnique();
+        removeUrl(url + '_(disambiguation)');
         removeUrl('http://en.wikipedia.org/wiki/Main_Page');
         removeUrl(url);
-
         return links;
     }
 
+    var sanitizeBody = function (body) {
+        $ = cheerio.load(body);
+        $('.hatnote, .thumb, .vertical-navbox').remove();
+        $('table,dd').remove();
+        return $.html();
+    }
+
     return {
-        sanitize: sanitize
+        sanitizeLinks: sanitizeLinks,
+        sanitizeBody: sanitizeBody
     };
-}();
+};

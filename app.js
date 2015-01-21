@@ -3,6 +3,7 @@ var app = express();
 var config = require('./configs').load();
 
 var di = {};
+di.cheerio = require('cheerio');
 di.mongoose = require('mongoose');
 di.mongoose.connect(config.mongoDbConnectionString);
 di.WikiPageLink = require('./models/WikiPageLink').inject(di);
@@ -10,7 +11,9 @@ di.WikiPath = require('./models/WikiPath').inject(di);
 
 app.get('/pathToPhilosophy', function (request, response) {
     var pathToPhilosophy = require('./modules/pathToPhilosophy').inject(di);
-    pathToPhilosophy.find(request.query.url, function (data) {
+    var findType = request.query.type || 'bfs';
+    console.log(request.query.url,findType);
+    pathToPhilosophy.find(request.query.url,findType, function (data) {
             response.json(data);
             response.end;
     });

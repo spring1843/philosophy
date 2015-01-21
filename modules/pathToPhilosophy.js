@@ -14,7 +14,8 @@ module.exports.inject = function (di) {
     }
 
     var find = function (url, type , callback) {
-        return false;
+
+        console.log('Find type', type);
         if(type === 'dfs')
             findDFS(url, callback);
 

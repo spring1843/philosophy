@@ -12,7 +12,7 @@ module.exports.inject = function (di) {
     var isResultsSentBack = false;
 
     var maxDepth = dep.maxDepth || 6;
-    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 300;
+    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 100;
     var maxNumberOfVisits = null;
 
     var init = function () {
@@ -231,9 +231,12 @@ module.exports.inject = function (di) {
     }
 
     var hasVisitedChild = function (childLink) {
-        if (visits.indexOf(childLink) === -1)
-            return false
-        return true;
+        for(var i in visits){
+            var visit = visits[i];
+            if(visit.link == childLink)
+                return true;
+        }
+        return false;
     }
 
     var visitChild = function (parent, childLink, callback) {

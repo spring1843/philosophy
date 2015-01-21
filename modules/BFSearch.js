@@ -5,15 +5,12 @@ module.exports.inject = function (di) {
     var destinationUrl = dep.destination || 'http://en.wikipedia.org/wiki/Philosophy';
     var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
     var WikiPath = dep.WikiPath || require('../models/WikiPath').inject(dep);
-    var depthFirstSearch = dep.depthFirstSearch || require('./DFSearch').inject(dep);
 
     var visits = [];
     var scrapes = [];
     var root = null;
     var isResultsSentBack = false;
-    var maxDepth = dep.maxDepth || 6;
-    var hardMaxNumberOfVisits = dep.hardMaxNumberOfVisits || 300;
-    var maxNumberOfVisits = null;
+    var maxDepth = dep.maxDepth || 300;
 
     var init = function () {
         visits = [];
@@ -21,8 +18,6 @@ module.exports.inject = function (di) {
         root = null;
         isResultsSentBack = false;
     }
-
-
 
     var find = function (url, callback) {
         console.log('Scraping', url);
@@ -43,10 +38,10 @@ module.exports.inject = function (di) {
             if (hasChildren(wikiPageLink) === false)
                 return false;
 
-            if (checkResults(wikiPageLink, callback) === true)
+            if (checkForSuccess(wikiPageLink, callback) === true)
                 return true;
 
-            depthFirstSearch(wikiPageLink, callback);
+            breadthFirstSearch(wikiPageLink, callback);
         });
     }
 
@@ -67,54 +62,17 @@ module.exports.inject = function (di) {
         if (root === null) {
             root = wikiPageLink;
             visits.push({link: wikiPageLink.link, parent: null});
-            if (hasChildren(root) === true) {
-                setMaxNumberOfVisits(root);
-                console.log("maxNumberOfVisits set to", maxNumberOfVisits);
-            } else {
+            if (hasChildren(root) === false) {
                 callback(null);
+                console.log('root has no children', root);
             }
         }
     }
 
-    var setMaxNumberOfVisits = function (root) {
-        var maxNumberOfVisitsGivenDepth = root.children.length * maxDepth;
-        if (maxNumberOfVisitsGivenDepth > hardMaxNumberOfVisits)
-            maxNumberOfVisits = hardMaxNumberOfVisits
-        else
-            maxNumberOfVisits = maxNumberOfVisitsGivenDepth;
-    }
-
-    var checkResults = function (wikiPageLink, callback) {
-        var isSuccessful = checkForSuccess(wikiPageLink, callback);
-        var isFailed = checkForFailure(callback);
-
-        if (isFailed === true || isSuccessful === true)
-            return true;
-        else
-            return false;
-    }
-
-    var checkForFailure = function (callback) {
-        if (isResultsSentBack === false && scrapes.length >= maxNumberOfVisits) {
-            finalizeFailure(callback);
-            return true;
-        }
-        return false;
-    }
 
     var checkForSuccess = function (wikiPageLink, callback) {
-        if (checkForDirectLink(wikiPageLink, callback) === true)
-            return true;
-
-        if (checkForExistenceInPaths(wikiPageLink, callback) === true)
-            return true;
-
-        return false;
-    }
-
-    var checkForDirectLink = function (wikiPageLink, callback) {
-        var isSuccessFull = isLinkedToPhilosophy(wikiPageLink);
-        console.log('Is linked to Philosophy?', isSuccessFull, wikiPageLink.link);
+        var isSuccessFull = isPhilosophy(wikiPageLink);
+        console.log('Is Philosophy?', isSuccessFull, wikiPageLink.link);
         if (isSuccessFull === true) {
             if (isResultsSentBack === false) {
                 finalizeSuccess(wikiPageLink, null, callback);
@@ -125,22 +83,9 @@ module.exports.inject = function (di) {
         return false;
     }
 
-    var checkForExistenceInPaths = function (wikiPageLink, callback) {
-        console.log("Does link exist in a successful path?", wikiPageLink.link);
-        WikiPath.findOne({path: wikiPageLink.link}, function (err, wikiPageLinkWithPath) {
-            if (err || wikiPageLinkWithPath == null || wikiPageLinkWithPath == undefined)
-                return;
-
-            var subPath = findSubPathInPath(wikiPageLinkWithPath.path, wikiPageLink.link);
-
-            if (isResultsSentBack === false)
-                finalizeSuccess(wikiPageLink, subPath, callback);
-            console.log('Link', wikiPageLink.link, 'exists in path of', wikiPageLinkWithPath.link);
-        });
-    }
 
     var saveSuccessForPath = function (wikiPageLink) {
-        var path = findPath(wikiPageLink.link);
+        var path = getPath();
 
         console.log('Saving path', path, "if no path in DB containing", path[0], 'is found');
         WikiPath.where({path: path[0]}).count(function (err, count) {
@@ -158,43 +103,17 @@ module.exports.inject = function (di) {
         });
     }
 
-    var findSubPathInPath = function (path, link) {
-        var linkIndex = path.indexOf(link);
-        if (linkIndex == 0)
-            return path.slice(linkIndex, path.length);
-        else
-            return path.slice(linkIndex, path.length - 1);
-    }
-
-    var findParent = function (wikiPageLink) {
-        var parent = null;
-        visits.some(function (visit) {
-            if (visit.link == wikiPageLink) {
-                parent = visit.parent;
-                return true;
-            }
-        });
-        return parent;
-    }
-
-    var findPath = function (link) {
+    var getPath = function(){
         var path = [];
-        path.push(link);
-        var parent = findParent(link);
-        while (parent != null) {
-            path.push(parent);
-            parent = findParent(parent);
+        for(i in visits){
+            path.push(visits[i].link);
         }
-        path.push(destinationUrl);
-
         return path;
     }
 
     var finalizeSuccess = function (wikiPageLink, path, callback) {
         if (isResultsSentBack === false) {
-            if (path === null)
-                path = findPath(wikiPageLink.link);
-
+            var path = getPath();
             var results = {path: path, crawls: scrapes.length, hops: path.length - 2};
             console.log('Success sent back with results', results);
             callback(results);
@@ -203,9 +122,9 @@ module.exports.inject = function (di) {
         isResultsSentBack = true;
     }
 
-    var finalizeFailure = function (callback) {
+    var finalizeFailure = function (message, callback) {
         if (isResultsSentBack === false) {
-            var results = {path: null, crawls: visits.length, hops: null};
+            var results = {path: null, crawls: visits.length, hops: null, message:message};
             console.log('Failure sent back with results', results);
             callback(results);
         }
@@ -213,40 +132,42 @@ module.exports.inject = function (di) {
         isResultsSentBack = true;
     }
 
-    var isLinkedToPhilosophy = function (wikiPageLink) {
-        if (wikiPageLink.children.indexOf(destinationUrl) != -1)
+    var isPhilosophy = function (wikiPageLink) {
+        if (wikiPageLink.link === destinationUrl)
             return true;
         else
             return false;
     }
 
-    var depthFirstSearch = function (wikiPageLink, callback) {
-        wikiPageLink.children.forEach(function (childLink) {
-            if (checkForMaxDepth(wikiPageLink.link) === true)
-                visitChild(wikiPageLink.link, childLink, callback);
-        });
+    var breadthFirstSearch = function (wikiPageLink, callback) {
+        if (checkForMaxDepth(wikiPageLink.link) === true) {
+            console.log('visiting child', wikiPageLink.children[0]);
+            visitChild(wikiPageLink.link, wikiPageLink.children[0], callback);
+        }else{
+            finalizeFailure('max depth reached',callback);
+        }
     }
 
-    var checkForMaxDepth = function (link) {
-        var path = findPath(link);
-        if (path.length < maxDepth)
+    var checkForMaxDepth = function () {
+        if (visits.length < maxDepth)
             return true;
         return false;
     }
 
     var hasVisitedChild = function (childLink) {
-        if (visits.indexOf(childLink) === -1)
-            return false
-        return true;
+        for(var i in visits){
+            var visit = visits[i];
+            if(visit.link == childLink)
+                return true;
+        }
+        return false;
     }
 
     var visitChild = function (parent, childLink, callback) {
 
         if (hasVisitedChild(childLink) === true) {
-            return;
-        }
-
-        if (visits.length >= maxNumberOfVisits) {
+            console.log(childLink, 'has been visited before potential loop in path', getPath());
+            finalizeFailure('ERR.LOOP', callback);
             return;
         }
 

@@ -2,8 +2,9 @@ module.exports.inject = function (di) {
 
     var dep = di;
     var linkscrape = dep.linkscrape || require('linkscrape');
+    var cheerio = dep.cheerio || require('cheerio');
     var request = dep.request || require('request');
-    var linkSanitizer = dep.linkSanitizer || require('./linkSanitizer.js');
+    var linkSanitizer = dep.linkSanitizer || require('./linkSanitizer.js').inject(dep);
     var WikiPageLink = dep.WikiPageLink || require('../models/WikiPageLink').inject(dep);
 
     var getWikiPageLinks = function (url, callback) {
@@ -24,13 +25,15 @@ module.exports.inject = function (di) {
         console.log("Searching DB for ", url);
         WikiPageLink.findOne({link: url}, {link: 1, children: 1, path: 1, _id: 0}).exec(function (error, wikiPageLink) {
             if (error)
-                wikiPageLink.children = [wikiPageLink[0]];
                 console.log('error', error)
+
 
             if (doesNeedRefetch(wikiPageLink) === true)
                 fetchUrlForFirstLink(url, callback);
-            else
+            else {
+                wikiPageLink.children = [wikiPageLink.children[0]];
                 callback(wikiPageLink);
+            }
 
         });
     }
@@ -50,7 +53,7 @@ module.exports.inject = function (di) {
         request(url, function (error, response, body) {
             if (error || response.statusCode != 200) {
                 console.log("Error, could not fetch", url);
-                callback(null);
+                callback({error:'could not browser' + url});
             }
 
             prepareWikiPageLink(url, body, callback);
@@ -62,7 +65,7 @@ module.exports.inject = function (di) {
         request(url, function (error, response, body) {
             if (error || response.statusCode != 200) {
                 console.log("Error, could not fetch", url);
-                callback(null);
+                callback({error:'could not browser' + url});
             }
 
             prepareWikiPageLinkForFirstLink(url, body, callback);
@@ -70,29 +73,22 @@ module.exports.inject = function (di) {
     }
 
     var prepareWikiPageLinkForFirstLink = function (url, body, callback) {
-        linkscrape(url, body, function (links) {
-            var sanitizedLinks = linkSanitizer.sanitize(url, links);
-            console.log("Creating WikiPageLink in DB for", url);
+        linkscrape(url, linkSanitizer.sanitizeBody(body), function (links) {
+            var sanitizedLinks = linkSanitizer.sanitizeLinks(url, links);
             var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
-            wikiPageLink.save(function(error){
-                if(error)
-                    console.log("Error creating new WikiPageLink");
-
-                console.log("Created WikiPageLink in DB for", url);
-            });
-            wikiPageLink.children = wikiPageLink[0];
+            wikiPageLink.children = wikiPageLink.children[0];
             callback(wikiPageLink);
         });
     }
 
     var prepareWikiPageLink = function (url, body, callback) {
         linkscrape(url, body, function (links) {
-            var sanitizedLinks = linkSanitizer.sanitize(url, links);
+            var sanitizedLinks = linkSanitizer.sanitizeLinks(url, links);
             console.log("Creating WikiPageLink in DB for", url);
             var wikiPageLink = new WikiPageLink({link: url, children: sanitizedLinks});
             wikiPageLink.save(function(error){
                 if(error)
-                    console.log("Error creating new WikiPageLink");
+                    console.log("Error creating new WikiPageLink", error);
 
                 console.log("Created WikiPageLink in DB for", url);
             });
