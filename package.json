@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.10.8",
-    "mongoose": "^3.8.21",
+    "mongoose": ">=5.7.5",
     "mongoose-mock": "^0.4.0",
     "request": "^2.51.0",
     "linkscrape": "0.1.0",
